@@ -2,6 +2,8 @@ import express from "express";
 import fs from "fs"; //treballar amb arxius
 import bodyParser from "body-parser"; //Ho afegim per entendre que estem rebent un json des de la petició post.
 
+
+// Grupo: Irie Yamashita y Sara Tamurejo
 //Creo l'objecte de l'aplicació
 const app=express();
 app.use(bodyParser.json())
