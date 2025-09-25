@@ -39,6 +39,8 @@ app.get("/",(req,res)=>{
 app.get("/books",(req,res)=>{
     const data=readData();
     res.json(data.books);
+
+
 })
 //Creem un endpoint per obtenir un llibre per un id
 app.get("/books/:id",(req,res)=>{
@@ -48,6 +50,7 @@ app.get("/books/:id",(req,res)=>{
     const id=parseInt(req.params.id);
     const book=data.books.find((book)=>book.id===id);
     res.json(book);
+
 })
 
 //Creem un endpoint del tipus post per afegir un llibre
@@ -55,14 +58,23 @@ app.get("/books/:id",(req,res)=>{
 app.post("/books",(req,res)=>{
     const data=readData();
     const body=req.body;
-    //todo lo que viene en ...body se agrega al nuevo libro
-    const newBook={
+    const {name} = body;
+    console.log(`Titulo libro: ${name}`);
+    const encontrado = data.books.some((book) => book.name ===name);
+    if(!encontrado){
+        console.log("No existe!")
+        const newBook={
         id:data.books.length+1,
         ...body,
     };
-    data.books.push(newBook);
-    writeData(data);
-    res.json(newBook);
+        data.books.push(newBook);
+        writeData(data);
+        res.json(newBook);
+    }else{
+        return res.status(400).json({message: "El libro ya existe!"})
+    }
+  
+    //todo lo que viene en ...body se agrega al nuevo libro
 });
 
 //Creem un endpoint per modificar un llibre
