@@ -28,6 +28,8 @@ const writeData=(data)=>{
         console.log(error);
     }
 }
+
+
 //Funció per llegir la informació
 //readData();
 
@@ -59,14 +61,15 @@ app.post("/books",(req,res)=>{
     const data=readData();
     const body=req.body;
     const {name} = body;
+    //const name = body.title; es lo mismo que lo de arriba
     console.log(`Titulo libro: ${name}`);
-    const encontrado = data.books.some((book) => book.name ===name);
+    const encontrado = data.books.some((book) => book.name === name);
     if(!encontrado){
         console.log("No existe!")
         const newBook={
         id:data.books.length+1,
         ...body,
-    };
+        };
         data.books.push(newBook);
         writeData(data);
         res.json(newBook);
@@ -98,11 +101,18 @@ app.delete("/books/:id", (req, res) => {
     const data = readData();
     const id = parseInt(req.params.id);
     const bookIndex = data.books.findIndex((book) => book.id === id);
-    //splice esborra a partir de bookIndex, el número de elements 
-    // que li indiqui al segon argument, en aquest cas 1
-    data.books.splice(bookIndex, 1);
-    writeData(data);
-    res.json({ message: "Book deleted successfully" });
+    //Si ha encontrado el id del libro, lo borra
+    if (bookIndex !== -1) {
+        //splice esborra a partir de bookIndex, el número de elements 
+        // que li indiqui al segon argument, en aquest cas 1
+        data.books.splice(bookIndex, 1);
+        writeData(data);
+        res.json({ message: "Book deleted successfully" });
+    }else{
+        //Si no lo ha encontrado, no lo borra y manda un mensaje de error
+        return res.status(404).json({message: "No se ha podido eliminar el libro, no existe!"});
+    }
+
   });
 
 //Funció per escoltar
