@@ -50,8 +50,13 @@ app.get("/books/:id", (req, res) => {
     //Extraiem l'id de l'url recordem que req es un objecte tipus requets
     // que conté l'atribut params i el podem consultar
     const id = parseInt(req.params.id);
+    
     const book = data.books.find((book) => book.id === id);
-    res.json(book);
+    if(book) {
+        res.json(book);
+    } else {
+        res.status(404).json({ message: `No existe un libro con el id ${id}!` })
+    }
 
 })
 
@@ -63,6 +68,11 @@ app.post("/books", (req, res) => {
     const { name } = body;
     //const name = body.title; es lo mismo que lo de arriba
     console.log(`Titulo libro: ${name}`);
+
+    if(!body.name || !body.author || !body.year ) {
+        return res.status(400).json({ message: `Petición mal hecha. Te faltan campos {name, author, year}`});
+    }
+
     const encontrado = data.books.some((book) => book.name === name);
     if (!encontrado) {
         const newBook = {
